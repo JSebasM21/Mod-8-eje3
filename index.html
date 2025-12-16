@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Juego de Memoria Profesional - Encuentra las parejas de cartas">
+    <title>🧠 Memoria Pro - Juego de Parejas</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="title">
+                    <i class="fas fa-brain"></i>
+                    <span class="title-text">Memoria Pro</span>
+                    <span class="version-badge">v2.0</span>
+                </h1>
+                <p class="subtitle">Memoriza las cartas y encuentra todas las parejas</p>
+            </div>
+            <div class="header-stats">
+                <div class="stats-box">
+                    <span class="stats-label">Mejor Tiempo</span>
+                    <span id="bestTime" class="stats-value">00:00</span>
+                </div>
+                <div class="stats-box">
+                    <span class="stats-label">Mejor Puntuación</span>
+                    <span id="bestScore" class="stats-value">0</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Panel de control -->
+        <div class="control-panel">
+            <div class="game-info">
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Tiempo</span>
+                        <span id="timer" class="info-value">00:00</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-shoe-prints"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Movimientos</span>
+                        <span id="moves" class="info-value">0</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Puntuación</span>
+                        <span id="score" class="info-value">0</span>
+                    </div>
+                </div>
+                
+                <div class="info-item">
+                    <div class="info-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="info-content">
+                        <span class="info-label">Eficiencia</span>
+                        <span id="efficiency" class="info-value">0%</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">
+                    <i class="fas fa-play"></i> Iniciar Juego
+                </button>
+                <button id="pauseBtn" class="btn btn-secondary" disabled>
+                    <i class="fas fa-pause"></i> Pausar
+                </button>
+                <button id="resetBtn" class="btn btn-danger">
+                    <i class="fas fa-redo"></i> Reiniciar
+                </button>
+                <button id="hintBtn" class="btn btn-warning" disabled>
+                    <i class="fas fa-lightbulb"></i> Pista
+                </button>
+            </div>
+        </div>
+
+        <!-- Selector de dificultad -->
+        <div class="difficulty-selector">
+            <h3><i class="fas fa-sliders-h"></i> Dificultad</h3>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn active" data-difficulty="easy">
+                    <i class="fas fa-baby"></i> Fácil (4x4)
+                </button>
+                <button class="difficulty-btn" data-difficulty="medium">
+                    <i class="fas fa-user"></i> Medio (6x4)
+                </button>
+                <button class="difficulty-btn" data-difficulty="hard">
+                    <i class="fas fa-user-ninja"></i> Difícil (6x6)
+                </button>
+                <button class="difficulty-btn" data-difficulty="expert">
+                    <i class="fas fa-robot"></i> Experto (8x8)
+                </button>
+            </div>
+        </div>
+
+        <!-- Selector de temas -->
+        <div class="theme-selector">
+            <h3><i class="fas fa-palette"></i> Tema</h3>
+            <div class="theme-buttons">
+                <button class="theme-btn active" data-theme="fruits">
+                    <i class="fas fa-apple-alt"></i> Frutas
+                </button>
+                <button class="theme-btn" data-theme="animals">
+                    <i class="fas fa-paw"></i> Animales
+                </button>
+                <button class="theme-btn" data-theme="flags">
+                    <i class="fas fa-flag"></i> Banderas
+                </button>
+                <button class="theme-btn" data-theme="emoji">
+                    <i class="fas fa-smile"></i> Emojis
+                </button>
+                <button class="theme-btn" data-theme="numbers">
+                    <i class="fas fa-hashtag"></i> Números
+                </button>
+            </div>
+        </div>
+
+        <!-- Panel de memorización -->
+        <div class="memorize-panel" id="memorizePanel">
+            <div class="memorize-header">
+                <h3><i class="fas fa-eye"></i> Fase de Memorización</h3>
+                <div class="memorize-timer">
+                    <span>Tiempo restante: </span>
+                    <span id="memorizeTimer">3</span>
+                    <span> segundos</span>
+                </div>
+            </div>
+            <div class="memorize-instructions">
+                <p><i class="fas fa-info-circle"></i> Memoriza la posición de todas las cartas. El juego comenzará automáticamente.</p>
+            </div>
+        </div>
+
+        <!-- Tablero de juego -->
+        <div class="game-container">
+            <div class="game-header">
+                <div class="progress-container">
+                    <div class="progress-label">
+                        <span>Progreso:</span>
+                        <span id="progressText">0/0</span>
+                    </div>
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                </div>
+                <div class="lives">
+                    <span>Vidas:</span>
+                    <div class="lives-icons" id="livesContainer">
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-heart"></i>
+                        <i class="fas fa-heart"></i>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="gameBoard" class="board"></div>
+            
+            <div class="game-footer">
+                <div class="combo-counter" id="comboCounter">
+                    <i class="fas fa-fire"></i>
+                    <span>Combo: <strong id="comboValue">0x</strong></span>
+                </div>
+                <div class="streak-indicator" id="streakIndicator">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Racha: <strong id="streakValue">0</strong></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Panel de estadísticas -->
+        <div class="stats-panel">
+            <h3><i class="fas fa-chart-bar"></i> Estadísticas</h3>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-name">Partidas Ganadas</span>
+                        <span id="gamesWon" class="stat-value">0</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-name">Tiempo Promedio</span>
+                        <span id="avgTime" class="stat-value">00:00</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-name">Mejor Eficiencia</span>
+                        <span id="bestEfficiency" class="stat-value">0%</span>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <div class="stat-content">
+                        <span class="stat-name">Total Movimientos</span>
+                        <span id="totalMoves" class="stat-value">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Historial de partidas -->
+        <div class="history-panel">
+            <div class="history-header">
+                <h3><i class="fas fa-history"></i> Historial</h3>
+                <button id="clearHistoryBtn" class="btn-small">
+                    <i class="fas fa-trash"></i> Limpiar
+                </button>
+            </div>
+            <div class="history-list" id="historyList">
+                <!-- Historial se cargará aquí -->
+            </div>
+        </div>
+
+        <!-- Modal de victoria -->
+        <div id="winModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-trophy"></i> ¡Victoria!</h2>
+                    <button class="modal-close">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="victory-stats">
+                        <div class="victory-stat">
+                            <span class="victory-label">Tiempo:</span>
+                            <span id="victoryTime" class="victory-value">00:00</span>
+                        </div>
+                        <div class="victory-stat">
+                            <span class="victory-label">Movimientos:</span>
+                            <span id="victoryMoves" class="victory-value">0</span>
+                        </div>
+                        <div class="victory-stat">
+                            <span class="victory-label">Puntuación:</span>
+                            <span id="victoryScore" class="victory-value">0</span>
+                        </div>
+                        <div class="victory-stat">
+                            <span class="victory-label">Eficiencia:</span>
+                            <span id="victoryEfficiency" class="victory-value">0%</span>
+                        </div>
+                        <div class="victory-stat">
+                            <span class="victory-label">Combo máximo:</span>
+                            <span id="victoryCombo" class="victory-value">0x</span>
+                        </div>
+                    </div>
+                    <div class="victory-achievements" id="victoryAchievements">
+                        <!-- Logros se mostrarán aquí -->
+                    </div>
+                    <div class="victory-rating">
+                        <span class="rating-label">Calificación:</span>
+                        <div class="stars" id="victoryStars">
+                            <!-- Estrellas se mostrarán aquí -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button id="playAgainBtn" class="btn btn-primary">
+                        <i class="fas fa-redo"></i> Jugar Otra Vez
+                    </button>
+                    <button id="shareBtn" class="btn btn-secondary">
+                        <i class="fas fa-share"></i> Compartir
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Notificaciones -->
+        <div id="notificationContainer" class="notification-container"></div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p class="footer-text">
+                <i class="fas fa-code"></i> 
+                Memoria Pro v2.0 - Desarrollado con HTML5, CSS3 y JavaScript
+            </p>
+            <p class="footer-info">
+                <i class="fas fa-info-circle"></i> 
+                Primero memoriza todas las cartas, luego encuentra las parejas
+            </p>
+        </footer>
+    </div>
+
+    <!-- Audio Elements -->
+    <audio id="flipSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-card-flip-2037.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="matchSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="mismatchSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-wrong-answer-fail-notification-946.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="winSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-winning-chimes-2015.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="hintSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-magic-sparkles-3061.mp3" type="audio/mpeg">
+    </audio>
+    <audio id="countdownSound" preload="auto">
+        <source src="https://assets.mixkit.co/sfx/preview/mixkit-game-show-countdown-bleeps-919.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
